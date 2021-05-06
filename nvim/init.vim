@@ -45,6 +45,8 @@ noremap <C-z> u
 noremap <LEADER><CR> :nohlsearch<CR>
 noremap , 0
 noremap . $
+noremap q :wq<CR>
+noremap z q
 
 
 
