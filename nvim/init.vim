@@ -45,7 +45,7 @@ noremap <C-z> u
 noremap <LEADER><CR> :nohlsearch<CR>
 noremap , 0
 noremap . $
-noremap q :wq<CR>
+noremap q :wq<CR>!
 noremap z q
 
 
@@ -69,11 +69,21 @@ map <LEADER><down> :res -5<CR>
 map <LEADER><left> :vertical resize-5<CR>
 map <LEADER><right> :vertical resize+5<CR>
 "宏命令快捷键
+"格式化字典
 map ff @z
 let @z=",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l"
 
+"去除空格
+map fg @y
+let @y=",/\: \<CR>jx\:nohlsearch\<CR>"
 
+
+
+
+
+"插件
 call plug#begin('~/.config/nvim/plugged')
+
 
 Plug 'vim-airline/vim-airline'
 Plug 'connorholyday/vim-snazzy'
@@ -82,28 +92,10 @@ Plug 'connorholyday/vim-snazzy'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "标签插件
 Plug 'kshenoy/vim-signature'
-"树插件
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 
 call plug#end()
 
 color snazzy
-
-
-" ===
-" === NERDTree
-" ===
-map tt :NERDTreeToggle<CR>
-"let NERDTreeMapOpenExpl = \""
-"let NERDTreeMapUpdir = \""
-"let NERDTreeMapUpdirKeepOpen = \""
-"let NERDTreeMapOpenSplit = \""
-"let NERDTreeOpenVSplit = \""
-"let NERDTreeMapActivateNode = \"i"
-"let NERDTreeMapOpenInTab = \"o"
-"let NERDTreeMapPreview = \""
-"let NERDTreeMapCloseDir = \"n"
-"let NERDTreeMapChangeRoot = \"y"
 
 
 " ===
