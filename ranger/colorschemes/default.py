@@ -18,7 +18,7 @@ user_color = green#magenta
 #print(default_colors)
 class Default(ColorScheme):
 
-    progress_bar_color = blue
+    progress_bar_color = 243#blue
 
     def use(self, context):  # pylint: disable=too-many-branches,too-many-statements
         fg, bg, attr = default_colors
