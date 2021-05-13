@@ -45,7 +45,7 @@ noremap <C-z> u
 noremap <LEADER><CR> :nohlsearch<CR>
 noremap , 0
 noremap . $
-noremap q :wq<CR>!
+noremap q :wq!<CR>
 noremap z q
 
 
@@ -69,15 +69,61 @@ map <LEADER><down> :res -5<CR>
 map <LEADER><left> :vertical resize-5<CR>
 map <LEADER><right> :vertical resize+5<CR>
 "宏命令快捷键
-"格式化字典
-map ff @z
-let @z=",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l"
-
+let @x="\/\{\\\|\}\<ESC>\:nohlsearch\<CR>yj"
+map fz @x
 "去除空格
 map fg @y
 let @y=",/\: \<CR>jx\:nohlsearch\<CR>"
 
+"格式化字典
+map ff @z
+let @z=",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l"
 
+
+"查找括号
+map fk :call Query_K()<CR>
+function Query_K()
+	:normal mk
+	:normal l
+	:normal ,
+	let Kl = 1
+	let Kr = 0
+	let K = Kl - Kr
+	let Num = 0
+	while K>0
+		:normal fz
+		if Num > line(".")
+			echo Kl
+			echo Kr
+			break
+		endif
+		let Num = line(".")
+"		echo Num
+"		echo line(".")
+		let Klr = @0
+"		echo Klr
+		if Klr == "{"
+			let Kl = Kl + 1
+		endif
+		if Klr == "}"
+			let Kr = Kr + 1
+		endif
+
+		let K = Kl - Kr
+		echo ""
+		""echo a
+		"echo a
+	endwhile
+	echo "你要查找的括号在".line(".")."行"
+
+
+endfunction
+
+
+function Aaaaaaa()
+	let a = line(".")
+	echo a
+endfunction
 
 
 
