@@ -1,0 +1,17 @@
+GIMP
+chromium
+coc/
+dconf/
+fcitx/
+google-chrome/
+gtk-2.0/
+neofetch/
+nitrogen/
+nvim/.netrwhist
+nvim/README.md
+nvim/plugged/
+pulse/
+ranger_/
+yay/
+ranger/rifle.conff
+ranger/plugins/fzf-marks/
