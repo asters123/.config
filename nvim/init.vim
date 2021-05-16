@@ -47,6 +47,7 @@ noremap , 0
 noremap . $
 noremap q :wq!<CR>
 noremap z q
+noremap t z
 
 
 
@@ -78,51 +79,62 @@ let @y=",/\: \<CR>jx\:nohlsearch\<CR>"
 "格式化字典
 map ff @z
 let @z=",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l"
+{
+{
+{}
+}
+{}
 
-
-"查找括号
-map fk :call Query_K()<CR>
-function Query_K()
-	:normal mk
+}
+"折叠"
+map tt  :call Query_zf_tt()<CR>
+function Query_zf_tt()
+	let zf_number_start = line(".")
 	:normal l
-	:normal ,
-	let Kl = 1
-	let Kr = 0
-	let K = Kl - Kr
-	let Num = 0
-	while K>0
-		:normal fz
-		if Num > line(".")
-			echo Kl
-			echo Kr
-			break
-		endif
-		let Num = line(".")
-"		echo Num
-"		echo line(".")
-		let Klr = @0
-"		echo Klr
-		if Klr == "{"
-			let Kl = Kl + 1
-		endif
-		if Klr == "}"
-			let Kr = Kr + 1
-		endif
-
+	let zf_number_end = line(".")
+	:normal k
+	let zf_number = zf_number_end - zf_number_start
+	if zf_number == 1
+		let zf_start = line(".")
+		:normal mk
+		:normal l
+		:normal ,
+		let Kl = 1
+		let Kr = 0
 		let K = Kl - Kr
-		echo ""
-		""echo a
-		"echo a
-	endwhile
-	echo "你要查找的括号在".line(".")."行"
+		let Num = 0
+		while K>0
+			:normal fz
+			if Num > line(".")
+				echo Kl
+				echo Kr
+				break
+			endif
+			let Num = line(".")
+			let Klr = @0
+	"		echo Klr
+			if Klr == "{"
+				let Kl = Kl + 1
+			endif
+			if Klr == "}"
+				let Kr = Kr + 1
+			endif
+	
+			let K = Kl - Kr
+			echo ""
+			endwhile
+			let zf_end = line(".")
+			let @w = "\:".zf_start."\<CR>"
+			:normal @w
+			let @w = "tf\:".zf_end."\<CR>"
+			:normal @w
+			echo "折叠"
+	else
+		:normal td
+		echo "取消折叠"
+	endif
 
 
-endfunction
-
-
-function Aaaaaaa()
-	let a = line(".")
-	echo a
 endfunction
 
 
@@ -245,7 +257,7 @@ nmap <silent> gy <Plug>(coc-type-definition)
 " nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nmap <leader>rn <Plug>(coc-rename)
-nmap tt :CocCommand explorer<CR>
+"nmap tt :CocCommand explorer<CR>
 " coc-translator
 nmap ts <Plug>(coc-translator-p)
 " Remap for do codeAction of selected region
