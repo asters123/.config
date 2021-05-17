@@ -79,13 +79,7 @@ let @y=",/\: \<CR>jx\:nohlsearch\<CR>"
 "格式化字典
 map ff @z
 let @z=",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l"
-{
-{
-{}
-}
-{}
 
-}
 "折叠"
 map tt  :call Query_zf_tt()<CR>
 function Query_zf_tt()
