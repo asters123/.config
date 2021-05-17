@@ -80,6 +80,49 @@ let @y=",/\: \<CR>jx\:nohlsearch\<CR>"
 map ff @z
 let @z=",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l"
 
+
+"查找括号
+map fk :call Query_K()<CR>
+function Query_K()
+	:normal mk
+	:normal l
+	:normal ,
+	let Kl = 1
+	let Kr = 0
+	let K = Kl - Kr
+	let Num = 0
+"	while K>0
+	let i=0
+	while i<18000
+		let i+=1
+		:normal fz
+		if Num > line(".")
+			echo Kl
+			echo Kr
+			break
+		endif
+		let Num = line(".")
+"		echo Num
+"		echo line(".")
+		let Klr = @0
+"		echo Klr
+		if Klr == "{"
+			let Kl = Kl + 1
+		endif
+		if Klr == "}"
+			let Kr = Kr + 1
+		endif
+
+		let K = Kl - Kr
+"		echo Klr
+	endwhile
+	echo "你要查找的括号在".line(".")."行"
+
+		echo Kl
+		echo Kr
+
+endfunction
+
 "折叠"
 map tt  :call Query_zf_tt()<CR>
 function Query_zf_tt()
