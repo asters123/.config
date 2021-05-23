@@ -80,6 +80,9 @@ let @y=",/\: \<CR>jx\:nohlsearch\<CR>"
 map ff @z
 let @z=",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l"
 
+"翻译"
+nmap <silent> fy <Plug>TranslateW
+
 
 "查找括号
 map fk :call Query_K()<CR>
@@ -187,6 +190,8 @@ Plug 'connorholyday/vim-snazzy'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 "标签插件
 Plug 'kshenoy/vim-signature'
+"翻译"
+Plug 'voldikss/vim-translator'
 
 call plug#end()
 
