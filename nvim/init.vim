@@ -45,10 +45,9 @@ noremap <C-z> u
 noremap <LEADER><CR> :nohlsearch<CR>
 noremap , 0
 noremap . $
-noremap q :wq<CR>
-noremap Q :wq<CR>
+noremap q ZZ
+noremap Q ZZ
 noremap z q
-noremap t z
 
 
 
@@ -179,6 +178,53 @@ function Query_zf_tt()
 endfunction
 
 
+func! CompileRunGcc()
+	exec "w"
+	if &filetype == 'c'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'cpp'
+		set splitbelow
+		exec "!g++ -std=c++11 % -Wall -o %<"
+		:sp
+		:res -15
+		:term ./%<
+	elseif &filetype == 'java'
+		set splitbelow
+		:sp
+		:res -5
+		term javac % && time java %<
+	elseif &filetype == 'sh'
+		:!time bash %
+	elseif &filetype == 'python'
+		set splitbelow
+		:sp
+		:term python3 %
+	elseif &filetype == 'html'
+		silent! exec "!".g:mkdp_browser." % &"
+	elseif &filetype == 'markdown'
+		exec "InstantMarkdownPreview"
+	elseif &filetype == 'tex'
+		silent! exec "VimtexStop"
+		silent! exec "VimtexCompile"
+	elseif &filetype == 'dart'
+		exec "CocCommand flutter.run -d ".g:flutter_default_device." ".g:flutter_run_args
+		silent! exec "CocCommand flutter.dev.openDevLog"
+	elseif &filetype == 'javascript'
+		set splitbelow
+		:sp
+		:term export DEBUG="INFO,ERROR,WARNING"; node --trace-warnings .
+	elseif &filetype == 'go'
+		:silent !go fmt .
+		set splitbelow
+		:sp
+		:term go run .
+	endif
+endfunc
+let @v = "\:w\<CR>\:silent \!go fmt \.\<CR>"
+map ty :silent !go fmt .<CR>
+map tt :call CompileRunGcc()<CR>
+
 
 "插件
 call plug#begin('~/.config/nvim/plugged')
@@ -193,6 +239,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'kshenoy/vim-signature'
 "翻译"
 Plug 'voldikss/vim-translator'
+"go"
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
 
@@ -257,6 +305,7 @@ let g:coc_global_extensions = [
         \ 'coc-vimlsp',
         \ 'coc-vetur',
         \ 'coc-yaml',
+        \ 'coc-go',
         \ 'coc-yank']
 inoremap <silent><expr> <TAB>
         \ pumvisible() ? "\<C-n>" :
