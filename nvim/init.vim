@@ -1,60 +1,61 @@
 
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
-let mapleader=" "
-
-syntax on
+"===========================
+"==
+"==	    set
+"==
+"===========================
+"设置行号
 set number
+"设置语法高亮
+syntax on
+"设置相对行号
 set relativenumber
-set cursorline
+"在光标处显示一条线
+"set cursorline
+"设置字不会超出屏幕，会换行显示，但是仍然在同一行
 set wrap
+"显示自己输入了什么命令
 set showcmd
+"在输入命令时，按tab可以有选项提示
 set wildmenu
-
+"设置文件格式为utf-8
 set encoding=utf-8
-
+"设置搜索高亮
 set hlsearch
+"设置搜索输入时，高亮可以同步
 set incsearch
+"搜索忽略大小写
 set ignorecase
+"搜索只认大写
 set smartcase
-
+"显示末尾空格
 set list
-set listchars=tab:▸\ ,trail:$
+"更改末尾空格显示
+set listchars=tab:▸\ ,trail:♪
 set scrolloff=8
 
-set backspace=indent,eol,start
 
-set laststatus=2
+"设置按p可以直接从系统剪切板粘贴
+"set clipboard=unnamed
 
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-
-
-exec "nohlsearch"
-
-
-noremap j l
-noremap l j
-noremap J 7l
-noremap L 5j
-noremap H 7h
-noremap K 5k
-noremap <C-z> u
-noremap <LEADER><CR> :nohlsearch<CR>
-noremap , 0
-noremap . $
-noremap q ZZ
-noremap Q ZZ
-noremap z q
+"===========================
+"==
+"==	    let
+"==
+"===========================
+"将<LEADER>改为空格键
+let mapleader=" "
 
 
 
-map <C-q> :q!<CR>
-map <C-s> :w<CR>
-map R :source $MYVIMRC<CR>
+"===========================
+"==
+"==	    map
+"==
+"===========================
 
+
+"窗口切换
 map sh :set nosplitright<CR>:vsplit<CR>
 map sj :set splitright<CR>:vsplit<CR>
 map sk :set nosplitbelow<CR>:split<CR>
@@ -69,221 +70,219 @@ map <LEADER><up> :res +5<CR>
 map <LEADER><down> :res -5<CR>
 map <LEADER><left> :vertical resize-5<CR>
 map <LEADER><right> :vertical resize+5<CR>
-"宏命令快捷键
-let @x="\/\{\\\|\}\<ESC>\:nohlsearch\<CR>yj"
-map fz @x
-"去除空格
-map fg @y
-let @y=",/\: \<CR>jx\:nohlsearch\<CR>"
+"===========================
+"==
+"==	    noremap
+"==
+"===========================
+"方向键(移动)
+"
+"	      ^
+"	      k
+"
+"	<h         j>
+"	
+"	      l
+"	      v
+"
+noremap j l
+noremap l j
+noremap H 7h
+noremap J 7l
+noremap L 7j
+noremap K 7k
+noremap K 7k
+noremap V :call setreg("l",line('.'))<CR>V
+noremap v :call setreg("n",col('.'))<CR>v
 
-"格式化字典
-map ff @z
-let @z=",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l"
+"===========================
+"==
+"==	    nnoremap
+"==
+"===========================
+nnoremap q ZZ
+nnoremap R :source ~/.config/nvim/init.vim<CR>
+nnoremap Q ZZ
+nnoremap z q
+noremap . $
+noremap , 0
+noremap n nzz
+noremap N Nzz
+noremap <LEADER><CR> :nohlsearch<CR>
+nnoremap <C-S> <ESC>:w<CR>
+nnoremap <C-q> <ESC>:q!<CR>
+inoremap <C-z> <ESC>u
+nnoremap <C-P> <ESC><C-I>
 
-"翻译"
-nmap <silent> fy <Plug>TranslateW
+"===========================
+"==
+"==	    inoremap
+"==
+"===========================
+"
+inoremap <c-s> <ESC>:w<CR>i
+inoremap <C-q> <ESC>:q!<CR>
+inoremap <C-z> <ESC>ui
+"inoremap <C-P> <ESC><C-i>i
+"inoremap <C-O> <ESC><C-O>i
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"===========================
+"	i-->在当前光标字符前插入
+"	a-->在当前光标字符后插入
+"	o-->在当前光标的下一行插入
+"
+"	I-->在当前行首位插入
+"	A-->在当前行末尾插入
+"	O-->在当前光标的上一行插入
 
+"	:w 保存
+"	:q 不保存退出(感叹号为强制执行)
+"	:vs 竖着分屏
+"	:sp 横着分屏
 
-"查找括号
-map fk :call Query_K()<CR>
-function Query_K()
-	:normal mk
-	:normal l
-	:normal ,
-	let Kl = 1
-	let Kr = 0
-	let K = Kl - Kr
-	let Num = 0
-"	while K>0
-	let i=0
-	while i<18000
-		let i+=1
-		:normal fz
-		if Num > line(".")
-			echo Kl
-			echo Kr
-			break
-		endif
-		let Num = line(".")
-"		echo Num
-"		echo line(".")
-		let Klr = @0
-"		echo Klr
-		if Klr == "{"
-			let Kl = Kl + 1
-		endif
-		if Klr == "}"
-			let Kr = Kr + 1
-		endif
+"	:% s/替换前的内容/替换后的内容/g  s表示替换 g表示全局
+"
+"===========================
+"==
+"==	   快速修正错误
+"==	（在终端中也适用）
+"==
+"===========================
 
-		let K = Kl - Kr
-"		echo Klr
-	endwhile
-	echo "你要查找的括号在".line(".")."行"
+"	ctrl+h删除上一个字符
+"	ctrl+w删除上一个单词
+"	ctrl+h删除当前行
+"
+"
 
-		echo Kl
-		echo Kr
-
-endfunction
-
-"折叠"
-map tt  :call Query_zf_tt()<CR>
-function Query_zf_tt()
-	let zf_number_start = line(".")
-	:normal l
-	let zf_number_end = line(".")
-	:normal k
-	let zf_number = zf_number_end - zf_number_start
-	if zf_number == 1
-		let zf_start = line(".")
-		:normal mk
-		:normal l
-		:normal ,
-		let Kl = 1
-		let Kr = 0
-		let K = Kl - Kr
-		let Num = 0
-		while K>0
-			:normal fz
-			if Num > line(".")
-				echo Kl
-				echo Kr
-				break
-			endif
-			let Num = line(".")
-			let Klr = @0
-	"		echo Klr
-			if Klr == "{"
-				let Kl = Kl + 1
-			endif
-			if Klr == "}"
-				let Kr = Kr + 1
-			endif
-	
-			let K = Kl - Kr
-			echo ""
-			endwhile
-			let zf_end = line(".")
-			let @w = "\:".zf_start."\<CR>"
-			:normal @w
-			let @w = "tf\:".zf_end."\<CR>"
-			:normal @w
-			echo "折叠"
-	else
-		:normal td
-		echo "取消折叠"
-	endif
+"===========================
+"==
+"==	    快捷键
+"==
+"===========================
 
 
-endfunction
+"	ctrl+c或者ctrl+[来代替ESC
+"	(ctrl+c)可能会使插件退出
+"	gi为上一次编写的位置
+"
+"	w/W 移到下一个 word/WORD 开头。e/E 下一个word/WORD尾
+"	b/B 回到上一个word/WORD开头，可以理解为backword
+"	word指的是以非空白符分割的单词，WORD以空白符分割的单词
+"	f{word}行间搜索 ;是去下一次结果 
+"	f是往后搜索，F是往前搜索
+"
+"	ctrl+u向上翻页，ctrl+f向下翻页
+"	ciw(change in word)
+"	同理yiw,diw,ciw
+"===========================
+"	substitute 命令允许我们查找并且替换掉文本，并且支持正则式
+"	:[range]s[ubstitute]/(pattern)/(string)/[flags]
+"	range 表示范围 比如：10，20表示10-20行，%表示全部pattern是要替换的模式，string是替换后文本
+"
+"	替换标志位
+"	Flags有几个常用的标志
+"	g(global) 表示全局范围内执行
+"	c(confirm)表示确认，可以确认或者拒绝修改
+"	n(number)报告匹配到的次数而不替换，可以用来查询匹配次数	
+"	zz可以将当前显示移至屏幕中间
+"
+"
+"
 
-
-func! CompileRunGcc()
-	exec "w"
-	if &filetype == 'c'
-		exec "!g++ % -o %<"
-		exec "!time ./%<"
-	elseif &filetype == 'cpp'
-		set splitbelow
-		exec "!g++ -std=c++11 % -Wall -o %<"
-		:sp
-		:res -15
-		:term ./%<
-	elseif &filetype == 'java'
-		set splitbelow
-		:sp
-		:res -5
-		term javac % && time java %<
-	elseif &filetype == 'sh'
-		:!time bash %
-	elseif &filetype == 'python'
-		set splitbelow
-		:sp
-		:term python3 %
-	elseif &filetype == 'html'
-		silent! exec "!".g:mkdp_browser." % &"
-	elseif &filetype == 'markdown'
-		exec "InstantMarkdownPreview"
-	elseif &filetype == 'tex'
-		silent! exec "VimtexStop"
-		silent! exec "VimtexCompile"
-	elseif &filetype == 'dart'
-		exec "CocCommand flutter.run -d ".g:flutter_default_device." ".g:flutter_run_args
-		silent! exec "CocCommand flutter.dev.openDevLog"
-	elseif &filetype == 'javascript'
-		set splitbelow
-		:sp
-		:term export DEBUG="INFO,ERROR,WARNING"; node --trace-warnings .
-	elseif &filetype == 'go'
-		:silent !go fmt .
-		set splitbelow
-		:sp
-		:term go run .
-	endif
-endfunc
-let @v = "\:w\<CR>\:silent \!go fmt \.\<CR>"
-map ty :silent !go fmt .<CR>
-map tt :call CompileRunGcc()<CR>
-
-
-"插件
+"===========================
+"==
+"==	   复制粘贴	
+"==
+"===========================
+"
+"	yy 复制一行
+"	dd 删除(剪切)一行
+"	p 粘贴
+"	"+y 复制到系统剪切板
+"	"+p 从系统剪切板粘贴
+"
+"===========================
+"==
+"==	  vim主题配色 
+"==
+"===========================
+"	
+"	:colorscheme可以显示当前配色方案
+"	:colorscheme <ctrl+d>可以显示所有的配色方案
+"	:colorscheme 配色名 可以更改配色
+"
+"	可以从https://github.com/flazz/vim-colorschemes下载配色
+"
+"
+"
+"
+"===========================
+"==
+"==	 vim-plug 
+"==
+"===========================
+"
 call plug#begin('~/.config/nvim/plugged')
 
-
+"状态栏美化插件
 Plug 'vim-airline/vim-airline'
+"主题插件
 Plug 'connorholyday/vim-snazzy'
-
-
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-"标签插件
-Plug 'kshenoy/vim-signature'
-"翻译"
-Plug 'voldikss/vim-translator'
-"go"
+"目录树插件
+Plug 'scrooloose/nerdtree'
+"vim-go插件
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+"coc补全插件
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+""标签插件
+Plug 'kshenoy/vim-signature'
+""翻译"
+Plug 'voldikss/vim-translator'
 
 call plug#end()
-
+"主题
 color snazzy
+"===========================
+"==
+"==	nerdtree 
+"==
+"===========================
+nnoremap tt :NERDTreeToggle<CR>
+"显示隐藏文件
+let NERDTreeShowHidden=1
+"不显示以下类型
+let NERDTreeIgnore = [ 
+	\ '.git$',
+	\ '.swp$',
+	\ ]
+"如果只剩下nerdtree则退出
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+"修改箭头
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '-'
+"let g:NERDTreeMapOpenInTab = 'o'
 
 
-" ===
-" === signature标签插件
-" ===
-let g:SignatureMap = {
-        \ 'Leader'             :  "m",
-        \ 'PlaceNextMark'      :  "m,",
-        \ 'ToggleMarkAtLine'   :  "m.",
-        \ 'PurgeMarksAtLine'   :  "dm-",
-        \ 'DeleteMark'         :  "dm",
-        \ 'PurgeMarks'         :  "dm/",
-        \ 'PurgeMarkers'       :  "dm?",
-        \ 'GotoNextLineAlpha'  :  "m<LEADER>",
-        \ 'GotoPrevLineAlpha'  :  "",
-        \ 'GotoNextSpotAlpha'  :  "m<LEADER>",
-        \ 'GotoPrevSpotAlpha'  :  "",
-        \ 'GotoNextLineByPos'  :  "",
-        \ 'GotoPrevLineByPos'  :  "",
-        \ 'GotoNextSpotByPos'  :  "mn",
-        \ 'GotoPrevSpotByPos'  :  "mp",
-        \ 'GotoNextMarker'     :  "",
-        \ 'GotoPrevMarker'     :  "",
-        \ 'GotoNextMarkerAny'  :  "",
-        \ 'GotoPrevMarkerAny'  :  "",
-        \ 'ListLocalMarks'     :  "m/",
-        \ 'ListLocalMarkers'   :  "m?"
-        \ }
+"===========================
+"==
+"==	   coc 
+"==
+"===========================
 
-
-" ===
-" === coc.nvim
-" ===
-"警告:出现了pyx之类的  请运行
-"python3 -m pip install --user --upgrade pynvim
-"pip install pylint
-"pip install jedi
 let g:coc_global_extensions = [
         \ 'coc-actions',
+        \ 'coc-go',
         \ 'coc-css',
         \ 'coc-diagnostic',
         \ 'coc-flutter-tools',
@@ -305,7 +304,6 @@ let g:coc_global_extensions = [
         \ 'coc-vimlsp',
         \ 'coc-vetur',
         \ 'coc-yaml',
-        \ 'coc-go',
         \ 'coc-yank']
 inoremap <silent><expr> <TAB>
         \ pumvisible() ? "\<C-n>" :
@@ -372,8 +370,169 @@ let g:coc_snippet_prev = '<c-n>'
 imap <C-e> <Plug>(coc-snippets-expand-jump)
 let g:snips_author = 'David Chen'
 autocmd BufRead,BufNewFile tsconfig.json set filetype=jsonc
+"===========================
+"==
+"==	   format
+"==
+"=============================
+"获得当前行号
+function! V_line_number()
+	call setreg("e",line('.'))
+	call setreg("m",col('.'))
+	let num_line_format=@e-@l+1
+	let num_col_format=@m-@n+1
+"g是行的值
+	call setreg("g",num_line_format)
+"h是竖得值
+	call setreg("h",num_col_format)
+endfunction
+function! Format_js()
+	call V_line_number()
+	call setreg("x", ",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l")
+	call setreg("i",@g."@x")
+endfunction
+"vnoremap ff :call setreg("e",line('.'))<CR> :@l<CR> :call Format_js()<CR>
+vnoremap ff :call Format_js()<CR> :@l<CR> :normal @i<CR>
+	
+"let @x="\/\{\\\|\}\<ESC>\:nohlsearch\<CR>yj"
+"map fz @x
+""去除空格
+"map fg @y
+"let @y=",/\: \<CR>jx\:nohlsearch\<CR>"
+"
+""格式化字典
+"map ff @z
+"let @z=",wi'\<ESC>/\:\<CR>i'\<ESC>jji'\<ESC>A',\<ESC>\:nohlsearch\<CR>l"
+
+"===========================
+"==
+"==	   一键运行
+"==
+"=============================
+func! CompileRunGcc()
+	exec "w"
+	if &filetype == 'c'
+		exec "!g++ % -o %<"
+		exec "!time ./%<"
+	elseif &filetype == 'cpp'
+		set splitbelow
+		exec "!g++ -std=c++11 % -Wall -o %<"
+		:sp
+		:res -15
+		:term ./%<
+	elseif &filetype == 'java'
+		set splitbelow
+		:sp
+		:res -5
+		term javac % && time java %<
+	elseif &filetype == 'sh'
+		:!time bash %
+	elseif &filetype == 'python'
+		set splitbelow
+		:sp
+		:term python3 %
+	elseif &filetype == 'html'
+		silent! exec "!".g:mkdp_browser." % &"
+	elseif &filetype == 'markdown'
+		exec "InstantMarkdownPreview"
+	elseif &filetype == 'tex'
+		silent! exec "VimtexStop"
+		silent! exec "VimtexCompile"
+	elseif &filetype == 'dart'
+		exec "CocCommand flutter.run -d ".g:flutter_default_device." ".g:flutter_run_args
+		silent! exec "CocCommand flutter.dev.openDevLog"
+	elseif &filetype == 'javascript'
+		set splitbelow
+		:sp
+		:term export DEBUG="INFO,ERROR,WARNING"; node --trace-warnings .
+	elseif &filetype == 'go'
+		set splitbelow
+		:sp
+		:term go run .
+	endif
+endfunc
+
+map <LEADER>s :call CompileRunGcc()<CR>
+
+"===========================
+"==
+"==	   一键注释
+"==
+"=============================
+func! Annotation()
+	echo &filetype
+	if &filetype == 'vim'
+		call setreg('z',"i\"")
+	elseif &filetype == "go"
+		call setreg('z',"i\/\/")
+	elseif &filetype == 'sh'
+		call setreg('z',"i\#")
+	elseif &filetype == 'python'
+		call setreg('z',"i\#")
+	endif
+	:normal @z
+endfunc
+inoremap bb <ESC>:call Annotation()<CR>a
 
 
-"template
+
+"===========================
+"==
+"==	    翻译
+"==
+"===========================
+nmap <silent> fy <Plug>TranslateW
+
+"===========================
+"==
+"== 	signature标签插件
+"==
+"===========================
+let g:SignatureMap = {
+        \ 'Leader'             :  "m",
+        \ 'PlaceNextMark'      :  "m,",
+        \ 'ToggleMarkAtLine'   :  "m.",
+        \ 'PurgeMarksAtLine'   :  "dm-",
+        \ 'DeleteMark'         :  "dm",
+        \ 'PurgeMarks'         :  "dm/",
+        \ 'PurgeMarkers'       :  "dm?",
+        \ 'GotoNextLineAlpha'  :  "m<LEADER>",
+        \ 'GotoPrevLineAlpha'  :  "",
+        \ 'GotoNextSpotAlpha'  :  "m<LEADER>",
+        \ 'GotoPrevSpotAlpha'  :  "",
+        \ 'GotoNextLineByPos'  :  "",
+        \ 'GotoPrevLineByPos'  :  "",
+        \ 'GotoNextSpotByPos'  :  "mn",
+        \ 'GotoPrevSpotByPos'  :  "mp",
+        \ 'GotoNextMarker'     :  "",
+        \ 'GotoPrevMarker'     :  "",
+        \ 'GotoNextMarkerAny'  :  "",
+        \ 'GotoPrevMarkerAny'  :  "",
+        \ 'ListLocalMarks'     :  "m/",
+        \ 'ListLocalMarkers'   :  "m?"
+        \ }
+
+"===========================
+"==
+"==	    exec 
+"==
+"===========================
+"exec是打开终端时，运行:后面的指令
+exec "nohlsearch"
+
+"===========================
+"==
+"==	     auto
+"==
+"===========================
+"打开文件，自动回到上次退出位置
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+"===========================
+"==
+"==	    template 
+"==
+"===========================
+
 autocmd BufNewFile *.py 0r ~/.config/nvim/template/python.py
-
+autocmd BufNewFile *.c 0r ~/.config/nvim/template/c.c
