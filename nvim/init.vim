@@ -550,7 +550,7 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 noremap <LEADER>f :call TemplateFormat()<CR>
 function! TemplateFormat()
 	if &filetype == "html"
-		r !echo -e "<\!DOCTYPE html>\n<html>\n<head>\n	<meta charset="UTF-8">\n	<title></title>\n</head>\n<body>\n\n\n</body>\n</html>"
+		r !echo -e "<\!DOCTYPE html>\n<html>\n<head>\n	<meta charset="UTF-8">\n	<title>标题</title>\n</head>\n<body>\n\n\n</body>\n</html>"
 		normal ggddG
 	elseif &filetype == "sh"
 		r !echo -e "\#\!/bin/bash"
