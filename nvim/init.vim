@@ -111,8 +111,11 @@ noremap N Nzz
 noremap <LEADER><CR> :nohlsearch<CR>
 nnoremap <C-S> <ESC>:w<CR>
 nnoremap <C-q> <ESC>:q!<CR>
-inoremap <C-z> <ESC>u
+nnoremap <C-z> <ESC>u
+nnoremap <C-x> <ESC><c-r>
 nnoremap <C-P> <ESC><C-I>
+
+
 
 "===========================
 "==
@@ -123,6 +126,8 @@ nnoremap <C-P> <ESC><C-I>
 inoremap <c-s> <ESC>:w<CR>i
 inoremap <C-q> <ESC>:q!<CR>
 inoremap <C-z> <ESC>ui
+inoremap <C-x> <ESC><c-r>i
+inoremap <C-x> <ESC><c-r>i
 "inoremap <C-P> <ESC><C-i>i
 "inoremap <C-O> <ESC><C-O>i
 "
@@ -253,6 +258,15 @@ Plug 'voldikss/vim-translator'
 call plug#end()
 "主题
 color snazzy
+
+
+"===========================
+"==
+"==	vim-go
+"==
+"===========================
+
+
 "===========================
 "==
 "==	nerdtree 
@@ -460,7 +474,7 @@ map <LEADER>s :call CompileRunGcc()<CR>
 "==
 "=============================
 func! Annotation()
-	echo &filetype
+"	echo &filetype
 	if &filetype == 'vim'
 		call setreg('z',"i\"")
 	elseif &filetype == "go"
@@ -472,7 +486,7 @@ func! Annotation()
 	endif
 	:normal @z
 endfunc
-inoremap bb <ESC>:call Annotation()<CR>a
+inoremap ?? <ESC>:call Annotation()<CR>a
 
 
 
@@ -533,6 +547,19 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 "==	    template 
 "==
 "===========================
-
+noremap <LEADER>f :call TemplateFormat()<CR>
+function! TemplateFormat()
+	if &filetype == "html"
+		r !echo -e "<\!DOCTYPE html>\n<html>\n<head>\n	<meta charset="UTF-8">\n	<title></title>\n</head>\n<body>\n\n\n</body>\n</html>"
+		normal ggddG
+	elseif &filetype == "sh"
+		r !echo -e "\#\!/bin/bash"
+		normal ggddG
+	elseif &filetype == "go"
+		r !echo -e "package main\n\nimport "fmt"\n\nfunc main() {\n 	fmt.Println("♧")\n}\n
+		normal ggddG
+	endif
+endfunction
 autocmd BufNewFile *.py 0r ~/.config/nvim/template/python.py
 autocmd BufNewFile *.c 0r ~/.config/nvim/template/c.c
+
