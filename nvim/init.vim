@@ -92,6 +92,8 @@ noremap J 7l
 noremap L 7j
 noremap K 7k
 noremap K 7k
+noremap U vU
+noremap ff gg=Ggi
 noremap V :call setreg("l",line('.'))<CR>V
 noremap v :call setreg("n",col('.'))<CR>v
 
@@ -128,6 +130,7 @@ inoremap <C-q> <ESC>:q!<CR>
 inoremap <C-z> <ESC>ui
 inoremap <C-x> <ESC><c-r>i
 inoremap <C-x> <ESC><c-r>i
+inoremap ff <ESC>gg=Ggi
 "inoremap <C-P> <ESC><C-i>i
 "inoremap <C-O> <ESC><C-O>i
 "
@@ -266,6 +269,10 @@ color snazzy
 "==
 "===========================
 
+if get(g:, "go_doc_keywordprg_enabled", 1)
+  " keywordprg doesn't allow to use vim commands, override it
+  nnoremap <buffer> <silent> ¥ :GoDoc<cr>
+endif
 
 "===========================
 "==
@@ -470,6 +477,27 @@ map <LEADER>s :call CompileRunGcc()<CR>
 
 "===========================
 "==
+"==	   一键括号
+"==
+"=============================
+func! AutoBracket()
+"	echo &filetype
+	if &filetype == 'html'
+		call setreg('y',col('.'))
+		call setreg('z',"\<ESC>hviwda<\<ESC>pa>")
+		let autobracket = @y+1
+		call setreg('x',"a\<\/\<ESC>pa>\<ESC>")
+		call setreg('y',",".autobracket."j")
+"		\<\/\<ESC>pa>\<ESC>gi
+	:normal @z
+	:normal @x
+	:normal @y
+	endif
+
+endfunc
+inoremap HH <ESC>:call AutoBracket()<CR>a
+"===========================
+"==
 "==	   一键注释
 "==
 "=============================
@@ -483,6 +511,10 @@ func! Annotation()
 		call setreg('z',"i\#")
 	elseif &filetype == 'python'
 		call setreg('z',"i\#")
+	elseif &filetype == 'css'
+		call setreg('z',"\<ESC>0i\/\*\<ESC>A\*\/")
+	elseif &filetype == 'html'
+		call setreg('z',"\<ESC>0i\<\!\-\-\<ESC>A\-\-\>")
 	endif
 	:normal @z
 endfunc
@@ -495,7 +527,7 @@ inoremap ?? <ESC>:call Annotation()<CR>a
 "==	    翻译
 "==
 "===========================
-nmap <silent> fy <Plug>TranslateW
+vnoremap <silent> fy <Plug>TranslateW
 
 "===========================
 "==
@@ -550,7 +582,7 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 noremap <LEADER>f :call TemplateFormat()<CR>
 function! TemplateFormat()
 	if &filetype == "html"
-		r !echo -e "<\!DOCTYPE html>\n<html>\n<head>\n	<meta charset="UTF-8">\n	<title>标题</title>\n</head>\n<body>\n\n\n</body>\n</html>"
+		r !echo -e "<\!DOCTYPE html>\n<html>\n<head>\n	<meta charset="UTF-8">\n	<title></title>\n</head>\n<body>\n\n\n</body>\n</html>"
 		normal ggddG
 	elseif &filetype == "sh"
 		r !echo -e "\#\!/bin/bash"
